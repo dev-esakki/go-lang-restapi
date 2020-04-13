@@ -21,36 +21,47 @@ var collection *mongo.Collection = client.Collection("persons")
 //task 	Person.Person
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
 
-	
-	ruan := Person.Person{"qwert", 28, "urkad"}
+	w.Header().Set("Context-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	  
+    var t Person.Person
+	_ = json.NewDecoder(r.Body).Decode(&t)
+	fmt.Println(t)
 
-	insertResult, err := collection.InsertOne(context.TODO(), ruan)
+	insertResult, err := collection.InsertOne(context.TODO(), t)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted a Single Document: ", insertResult.InsertedID) 
+	json.NewEncoder(w).Encode(t)
 }
 
 
 func CreateManyPerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Context-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-    ruan := Person.Person{"Ruan", 34, "Cape Town"}
+    /* ruan := Person.Person{"Ruan", 34, "Cape Town"}
     james := Person.Person{"James", 32, "Nairobi"}
-    frankie := Person.Person{"Frankie", 31, "Nairobi"}
+	frankie := Person.Person{"Frankie", 31, "Nairobi"} */
+	var t []Person.Person
+	_ = json.NewDecoder(r.Body).Decode(&t)
+	fmt.Println(t)
+	var ui []interface{}
+	//trainers := []interface{}{ruan, james}
+	for _, t := range t {
+		ui = append(ui, t)
+	}
 
-    trainers := []interface{}{james, frankie, ruan}
-
-    insertManyResult, err := collection.InsertMany(context.TODO(), trainers)
+    insertManyResult, err := collection.InsertMany(context.TODO(), ui)
     if err != nil {
       log.Fatal(err)
     }
 	fmt.Println("Inserted multiple documents: ", insertManyResult.InsertedIDs)
-	json.NewEncoder(w).Encode(trainers)
+	json.NewEncoder(w).Encode(ui)
 }
 
 func GetAllPersons(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Context-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	data, err := collection.Find(context.TODO(), bson.D{{}}) //or bson.M
 	if err != nil {
@@ -66,7 +77,7 @@ func GetAllPersons(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Context-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	filter := bson.D{{"name", "Ruan"}}
 	//filter := bson.M{{"name": "Ruan"}}
@@ -85,7 +96,7 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdatePerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Context-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	filter := bson.D{{"name", "Ruan"}}
@@ -101,4 +112,15 @@ func UpdatePerson(w http.ResponseWriter, r *http.Request) {
 
 	updatedObject := *data
 	json.NewEncoder(w).Encode(updatedObject)
+}
+
+func DeletePerson(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	filter := bson.D{{"name", "Updated Name of person 1"}}
+	data, err := collection.DeleteOne(context.TODO(), filter) 
+	if err != nil {
+		log.Fatal(err)
+	}
+	json.NewEncoder(w).Encode(data)
 }

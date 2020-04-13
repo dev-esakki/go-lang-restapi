@@ -18,12 +18,6 @@ const connectionString = "mongodb://localhost:27017"
 // Database Name
 const dbName = "mydb"
 
-// Collection name
-const collName = "todolist"
-
-// collection object/instance
-var collection *mongo.Collection
-
 var database *mongo.Database
 
 // create connection with mongo db

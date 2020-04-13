@@ -2,7 +2,7 @@ package person
 
 
 type Person struct {
-    Name string
-    Age  int
-    City string
+    Name string `json: "name"`
+    Age  int `json: "age"`
+    City string `json: "city"`
 }
