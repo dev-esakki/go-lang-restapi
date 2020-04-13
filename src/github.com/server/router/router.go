@@ -12,6 +12,9 @@ func Router() *mux.Router {
 	r:= mux.NewRouter()
 
 	r.HandleFunc("/", middleperson.CreatePerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/getPerson", middleperson.GetPerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/getAllPerson", middleperson.GetAllPersons).Methods("GET", "OPTIONS")
+	r.HandleFunc("/CreateManyPerson", middleperson.CreateManyPerson).Methods("GET", "OPTIONS")
 	
 	return r
 }
