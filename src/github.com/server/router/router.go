@@ -15,6 +15,7 @@ func Router() *mux.Router {
 	r.HandleFunc("/getPerson", middleperson.GetPerson).Methods("GET", "OPTIONS")
 	r.HandleFunc("/getAllPerson", middleperson.GetAllPersons).Methods("GET", "OPTIONS")
 	r.HandleFunc("/CreateManyPerson", middleperson.CreateManyPerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/UpdatePerson", middleperson.UpdatePerson).Methods("GET", "OPTIONS")
 	
 	return r
 }
