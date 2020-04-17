@@ -5,7 +5,6 @@ import (
 	"context"
 	"log"
 	"fmt"
-	"github.com/server/db"
 	Person "github.com/server/modals/person"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,11 +13,9 @@ import (
 	"encoding/json"
 
 )
-var client *mongo.Database = db.Database()
-var collection *mongo.Collection = client.Collection("persons")
 
-// Insert one task in the DB
-//task 	Person.Person
+var collection *mongo.Collection = Person.PersonsDb()
+
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Context-Type", "application/json")
@@ -56,7 +53,7 @@ func CreateManyPerson(w http.ResponseWriter, r *http.Request) {
     if err != nil {
       log.Fatal(err)
     }
-	fmt.Println("Inserted multiple documents: ", insertManyResult.InsertedIDs)
+	fmt.Println("Inserted multiple documents: ", insertManyResult)
 	json.NewEncoder(w).Encode(ui)
 }
 

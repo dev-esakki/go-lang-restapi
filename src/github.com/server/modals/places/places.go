@@ -1,4 +1,4 @@
-package person
+package places
 
 import (
     "github.com/server/db"
@@ -8,14 +8,14 @@ import (
 var client *mongo.Database = db.Database()
 var collection *mongo.Collection
 
-type Person struct {
+type Places struct {
     Id int `json: "id"`
-    Name string `json: "name"`
-    Age  int `json: "age"`
+    Userid int `json: "userid"`
+    Note string `json: "note"`
     City string `json: "city"`
 }
 
-func PersonsDb()*mongo.Collection {
-    collection  = client.Collection("persons")
+func PlacesDb()*mongo.Collection {
+    collection  = client.Collection("places")
     return collection
 }
