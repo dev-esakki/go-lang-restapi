@@ -7,6 +7,7 @@ import (
 	"fmt"
 	Places "github.com/server/modals/places"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"encoding/json"
 
@@ -33,3 +34,21 @@ func CreateManyPlaces(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Inserted multiple places: ", insertManyResult)
 	json.NewEncoder(w).Encode(ui)
 }
+
+func GetAllPlaces( w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	data, err := colPlaces.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var places []bson.M
+	if err = data.All(context.TODO(), &places); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(places)
+	json.NewEncoder(w).Encode(places)
+}
+

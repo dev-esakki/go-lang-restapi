@@ -6,6 +6,7 @@ import (
 	"log"
 	"fmt"
 	Person "github.com/server/modals/person"
+	StructPlaces "github.com/server/modals/places"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -120,4 +121,32 @@ func DeletePerson(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	json.NewEncoder(w).Encode(data)
+}
+
+type PodcastEpisode struct {
+
+	Age int `bson:"age"`
+	City string `bson:"city"`
+	Id int `bson:"id"`
+	Places []StructPlaces.Places `bson:"places"`
+}
+
+func GetUserPlaces(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	matchStage := bson.D{{"$match", bson.D{{"id", 1}}}}
+	lookupStage := bson.D{{"$lookup", bson.D{{"from", "places"}, {"localField", "id"}, {"foreignField", "userid"}, {"as", "Places"}}}}
+	//unwindStage := bson.D{{"$unwind", bson.D{{"path", "$podcast"}, {"preserveNullAndEmptyArrays", false}}}}
+
+	showLoadedCursor, err := collection.Aggregate(context.TODO(), mongo.Pipeline{matchStage, lookupStage})
+	if err != nil {
+		panic(err)
+	}
+	var showsLoaded []PodcastEpisode
+	if err = showLoadedCursor.All(context.TODO(), &showsLoaded); err != nil {
+		panic(err)
+	}
+	fmt.Println(showsLoaded)
+	json.NewEncoder(w).Encode(showsLoaded)
 }
