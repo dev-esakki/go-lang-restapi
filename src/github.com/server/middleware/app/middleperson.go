@@ -143,7 +143,7 @@ func GetUserPlaces(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	var showsLoaded []PodcastEpisode
+	var showsLoaded []PodcastEpisode  //use struct or bson.M
 	if err = showLoadedCursor.All(context.TODO(), &showsLoaded); err != nil {
 		panic(err)
 	}
