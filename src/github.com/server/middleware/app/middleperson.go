@@ -123,7 +123,7 @@ func DeletePerson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-type PodcastEpisode struct {
+type UserPlaces struct {
 
 	Age int `bson:"age"`
 	City string `bson:"city"`
@@ -143,7 +143,7 @@ func GetUserPlaces(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	var showsLoaded []PodcastEpisode  //use struct or bson.M
+	var showsLoaded []UserPlaces  //use struct or bson.M
 	if err = showLoadedCursor.All(context.TODO(), &showsLoaded); err != nil {
 		panic(err)
 	}
