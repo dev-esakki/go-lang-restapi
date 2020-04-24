@@ -73,21 +73,12 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdatePerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	filter := bson.D{{"name", "Ruan"}}
-	newName := bson.D{
-		{"$set", bson.D{
-			{"name", "Updated Name of person 1"},
-		}},
-	}
-	data, err := collection.UpdateOne(context.TODO(), filter, newName) 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	updatedObject := *data
+	var t Person.Person
+	_ = json.NewDecoder(r.Body).Decode(&t)
+	
+	getResult := SUserUpdate{id: t.Id, name: t.Name, age: t.Age, city: t.City}
+	updatedObject := getResult.UserUpdate()
 	json.NewEncoder(w).Encode(updatedObject)
 }
 
