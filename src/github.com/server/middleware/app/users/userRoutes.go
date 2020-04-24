@@ -9,7 +9,7 @@ import (
 	StructPlaces "github.com/server/modals/places"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	//"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"encoding/json"
 
@@ -55,37 +55,21 @@ func CreateManyPerson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ui)
 }
 
-func GetAllPersons(w http.ResponseWriter, r *http.Request) {
-	data, err := collection.Find(context.TODO(), bson.D{{}}) //or bson.M
-	if err != nil {
-		log.Fatal(err)
-	}
-	var persons []bson.M
-	if err = data.All(context.TODO(), &persons); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(persons)
-	json.NewEncoder(w).Encode(persons)
- 
+func GetAllPersons(w http.ResponseWriter, r *http.Request) {	
+	persons := GetAllUsers()
+	json.NewEncoder(w).Encode(persons) 
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	filter := bson.D{{"name", "Ruan"}}
-	//filter := bson.M{{"name": "Ruan"}}
-	var result Person.Person
+	var t Person.Person
+	_ = json.NewDecoder(r.Body).Decode(&t)
+	
+	getResult := SGetUser{t.Name}
+	result := getResult.GetUser()
+	json.NewEncoder(w).Encode(result)
 
-	err := collection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-  fmt.Printf("Found a single document: %+v\n", result)
-  json.NewEncoder(w).Encode(result)
-
-  findOptions := options.Find()
-	findOptions.SetLimit(2)	
+  /* findOptions := options.Find()
+	findOptions.SetLimit(2)	 */
 }
 
 func UpdatePerson(w http.ResponseWriter, r *http.Request) {

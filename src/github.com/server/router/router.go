@@ -14,7 +14,7 @@ func Router() *mux.Router {
 	r:= mux.NewRouter()
     //r.Use(commonMiddleware)
 	r.HandleFunc("/", users.CreatePerson).Methods("POST", "OPTIONS")
-	r.HandleFunc("/getPerson", users.GetPerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/getPerson", users.GetPerson).Methods("POST", "OPTIONS")
 	r.HandleFunc("/getAllPerson", users.GetAllPersons).Methods("GET", "OPTIONS")
 	r.HandleFunc("/CreateManyPerson", users.CreateManyPerson).Methods("POST", "OPTIONS")
 	r.HandleFunc("/UpdatePerson", users.UpdatePerson).Methods("GET", "OPTIONS")
