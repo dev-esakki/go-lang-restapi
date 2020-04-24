@@ -1,4 +1,4 @@
-package middleperson
+package users
 
 
 import (
@@ -18,9 +18,6 @@ import (
 var collection *mongo.Collection = Person.PersonsDb()
 
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Context-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	  
     var t Person.Person
 	_ = json.NewDecoder(r.Body).Decode(&t)
@@ -59,8 +56,6 @@ func CreateManyPerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllPersons(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	data, err := collection.Find(context.TODO(), bson.D{{}}) //or bson.M
 	if err != nil {
 		log.Fatal(err)

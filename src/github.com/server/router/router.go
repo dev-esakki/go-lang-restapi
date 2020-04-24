@@ -3,24 +3,33 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	middleware "github.com/server/middleware/app"
+	"github.com/server/middleware/app/users"
+	"github.com/server/middleware/app/products"
+	"net/http"
 )
 
 // Router is exported and used in main.go
 func Router() *mux.Router {
 
 	r:= mux.NewRouter()
-
-	r.HandleFunc("/", middleware.CreatePerson).Methods("POST", "OPTIONS")
-	r.HandleFunc("/getPerson", middleware.GetPerson).Methods("GET", "OPTIONS")
-	r.HandleFunc("/getAllPerson", middleware.GetAllPersons).Methods("GET", "OPTIONS")
-	r.HandleFunc("/CreateManyPerson", middleware.CreateManyPerson).Methods("POST", "OPTIONS")
-	r.HandleFunc("/UpdatePerson", middleware.UpdatePerson).Methods("GET", "OPTIONS")
-	r.HandleFunc("/DeletePerson", middleware.DeletePerson).Methods("GET", "OPTIONS")
-	r.HandleFunc("/GetUserPlaces", middleware.GetUserPlaces).Methods("GET", "OPTIONS")
+    //r.Use(commonMiddleware)
+	r.HandleFunc("/", users.CreatePerson).Methods("POST", "OPTIONS")
+	r.HandleFunc("/getPerson", users.GetPerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/getAllPerson", users.GetAllPersons).Methods("GET", "OPTIONS")
+	r.HandleFunc("/CreateManyPerson", users.CreateManyPerson).Methods("POST", "OPTIONS")
+	r.HandleFunc("/UpdatePerson", users.UpdatePerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/DeletePerson", users.DeletePerson).Methods("GET", "OPTIONS")
+	r.HandleFunc("/GetUserPlaces", users.GetUserPlaces).Methods("GET", "OPTIONS")
 	
 	
-	r.HandleFunc("/CreateManyPlaces", middleware.CreateManyPlaces).Methods("POST", "OPTIONS")
-	r.HandleFunc("/GetAllPlaces", middleware.GetAllPlaces).Methods("GET", "OPTIONS")
+	r.HandleFunc("/CreateManyPlaces", products.CreateManyPlaces).Methods("POST", "OPTIONS")
+	r.HandleFunc("/GetAllPlaces", products.GetAllPlaces).Methods("GET", "OPTIONS")
 	return r
+}
+
+func commonMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Add("Content-Type", "application/json")
+        next.ServeHTTP(w, r)
+    })
 }
